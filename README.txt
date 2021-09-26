@@ -1,1 +1,0 @@
-Katotaanpa tuleeko t„nne jotain
