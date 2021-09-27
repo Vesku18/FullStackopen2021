@@ -13,9 +13,9 @@ const Content = (props) =>{
   return(
     <div>
         
-      <Part osa={props.p1} />
-      <Part osa={props.p2} />
-      <Part osa={props.p3} />
+      <Part osa={props.p[0].name} ex={props.p[0].exercises} />
+      <Part osa={props.p[1].name} ex={props.p[1].exercises} />
+      <Part osa={props.p[2].name} ex={props.p[2].exercises} />
       
     </div>
   )
@@ -25,8 +25,8 @@ const Part = (props) =>{
   console.log("Part")
   console.log(props)
   return(
-    <p>      
-        {props.osa.name} {props.osa.exercises}
+    <p>  
+        {props.osa} {props.ex}
     </p>
   )
 }
@@ -41,25 +41,27 @@ const Total = (props) =>{
 
 const App = () => {
   const course = 'Half Stack application development'
-  const part1 = { 
+  const parts = [
+    { 
     name:'Fundamentals of React',
     exercises: 10
-  }
-  const part2 = {
+    },
+    {
     name:'Using props to pass data',
     exercises: 7
-  }
-  const part3 = {
+    },
+    {
     name:'State of a component',
     exercises: 14
-  }
+    }
+  ]
   const totalLabel = 'Number of exercises'  
 
   return (
     <div>
       <Header otsikko = {course}/>
-      <Content p1 = {part1} p2 = {part2} p3 = {part3} />
-      <Total total = {part1.exercises + part2.exercises + part3.exercises} totalLabel = {totalLabel} />
+      <Content p = {parts} />
+      <Total total = {parts[0].exercises + parts[1].exercises + parts[2].exercises} totalLabel = {totalLabel} />
     </div>
   )
 }
