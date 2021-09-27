@@ -8,9 +8,25 @@ const Header = (props) => {
 }
 
 const Content = (props) =>{
+  console.log("Content")
+  console.log(props)
   return(
-    <p>
-      {props.osa} {props.ex}
+    <div>
+        
+      <Part osa={props.p1} ex={props.ex1} />
+      <Part osa={props.p2} ex={props.ex2} />
+      <Part osa={props.p3} ex={props.ex3} />
+      
+    </div>
+  )
+}
+
+const Part = (props) =>{
+  console.log("Part")
+  console.log(props)
+  return(
+    <p>      
+        {props.osa} {props.ex}
     </p>
   )
 }
@@ -32,15 +48,11 @@ const App = () => {
   const part3 = 'State of a component'
   const exercises3 = 14
   const totalLabel = 'Number of exercises'  
-
+  let l = [part1,part2,part3]
   return (
     <div>
       <Header otsikko = {course}/>
-      <Content osa = {part1} ex = {exercises1} />
-      <Content osa = {part2} ex = {exercises2} />
-      <Content osa = {part3} ex = {exercises3} />
-      
-      
+      <Content p1 = {part1} p2 = {part2} p3 = {part3} ex1 = {exercises1} ex2 = {exercises2} ex3 = {exercises3}/>
       <Total total = {exercises1 + exercises2 + exercises3} totalLabel = {totalLabel} />
     </div>
   )
