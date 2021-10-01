@@ -43,10 +43,7 @@ const Statistics = ({counterGood,counterNeutral,counterBad}) =>{
 }
 
 const App = () => {
-  const kaikki = 'all'
-  const ka = 'average'
-  const pos = 'postitive'
-
+ 
   const [counterGood, setCounterGood ] = useState(0)
   const [counterNeutral, setCounterNeutral ] = useState(0)
   const [counterBad, setCounterBad ] = useState(0)
