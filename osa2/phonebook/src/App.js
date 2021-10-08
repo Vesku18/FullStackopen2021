@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react'
 import Contact from './components/Contact'
 import Addnew from './components/Addnew'
 import axios from 'axios'
+import contactsService from './services/phonebookaccess'
+
 
 
 const ShowRow = ({countriesToShow, handle}) => {
@@ -55,15 +57,28 @@ const App = (props) => {
   const [countryFilter, setCountryFilter] = useState([])
   const [countriesToShow, setCountriesToShow] = useState([])
 
-  
+  const [message, setMessage] = useState("")
+  const Message = ({message}) => {
+    return(
+      <div className="message">
+        {message}
+      </div>
+    )
+  }
+  const noteM = (message) => {   
+    setMessage(message)
+    setTimeout(() =>{
+      setMessage(null)
+    },3000)
+  }  
 
   const hook=()=>{
   console.log("effect")
-  axios
-    .get('http://localhost:3001/persons')
-    .then(response=>{
+  contactsService
+    .getAll()
+    .then(initialContacts=>{
       console.log('promise fullfilled')
-      setPersons(response.data)
+      setPersons(initialContacts)
     })
   }
 
@@ -90,22 +105,54 @@ const App = (props) => {
 
     if (persons.map(n =>n.name).indexOf(newName) > -1)
     {
-    alert(`${newName} exists, not added`)
+      const contact = persons.find(s => s.name === newName)
+      contact.number = newNumber
+  
+      if(window.confirm("Contact exists, wanna update it")){
+        contactsService
+          .update(contact.id, contact)
+          .then(response => {console.log(response)
+                setPersons(persons.map(s=>s.id !== contact.id ? s : response))
+          })
+        noteM(`contact ${contact.name} updated`)
+        }
     }
     else
     {
       const contactObject = {
-      name: newName,
-      number: newNumber,
-      date: new Date().toISOString(),
-      id: persons.length + 1,
+        name: newName,
+        number: newNumber,
+        date: new Date().toISOString(),
       }
-      console.log('new contact added, event.target')
+
+      contactsService
+        .create(contactObject)
+        .then(response => {console.log(response)})
 
       setPersons(persons.concat(contactObject))
+
       setNewName('')
       setNewNumber('')
+
+      console.log('new contact added, event.target')
+      noteM("New contact added")
     }
+  }
+
+  const removeContact=(id) => {
+      console.log("Try to delaa")
+      contactsService
+      .delaa(id)
+      .then(response =>{console.log(response)
+                        hook()
+                        noteM("One contact removed")
+                      }
+          )
+
+      .catch(error =>{
+        hook()
+        noteM("Contact was already removed")
+      })
   }
 
   const handleNameChange = (event) => {
@@ -137,7 +184,6 @@ const App = (props) => {
   }
   
   const handleJumpToCountry = (n) => {
-    
     setCountryFilter(n.name)
     setCountriesToShow(countries.filter((a)=>a.name.includes(n.name)))
   }
@@ -149,8 +195,9 @@ const App = (props) => {
   return (
     <div>
       <h2>Phonebook</h2>
-      
+      <p><Message message={message}></Message></p>
       <div>
+
       filter shown with:
         <input value={bookFilter}
         onChange={handleBookFilterChange} />
@@ -171,7 +218,7 @@ const App = (props) => {
       </div>
       <ul>
         {contactsToShow.map(n => 
-          <Contact key={n.name} contact={n} />
+          <Contact key={n.name} contact={n} action={()=>removeContact(n.id)} />
         )}
       </ul>
 
